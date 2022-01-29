@@ -7,8 +7,8 @@ clear;clc;close all;
 % Author: Sidong Guo
 % Date: Jan 23rd 2022
 %% Initialization
-d=0.2; %Microphone distance to the middle reference microphone
-rx=10;ry=6;rz=10;
+d=0.4; %Microphone distance to the middle reference microphone
+rx=4;ry=6;rz=4;
 % Initialize Square array 
 rxULA = phased.OmnidirectionalMicrophoneElement;
 rxpos1 = [0;0;0];
@@ -34,13 +34,13 @@ srcvel = [0;0;0];
 srcax = azelaxes(0,0);
 srcULA = phased.OmnidirectionalMicrophoneElement;
 % Parameters definition
-Carrier_Fre = 20e3;             % 20 kHz
+Carrier_Fre = 100e3;             % 20 kHz
 Propagation_Speed = 340;            % 340 m/s
 Operating_range = 34;            % 34 m
 pri = (2*Operating_range)/Propagation_Speed;
 prf = 1/pri;
 bw = 5e3;              % 5 kHz
-fs = 4*bw;
+fs = 9.6*bw;
 waveform = phased.LinearFMWaveform('SampleRate',fs,'SweepBandwidth',bw,'PRF',prf,'PulseWidth',pri/10);
 signal = waveform();
 % Set up Transmitting and Receiving objects 
@@ -177,7 +177,10 @@ xcor13_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr3)))./(abs(fft(sigr1)).*
 xcor14_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr4)))./(abs(fft(sigr1)).*abs(fft(sigr4))))));
 xcor15_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr5)))./(abs(fft(sigr1)).*abs(fft(sigr5))))));
 xcor16_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr6)))./(abs(fft(sigr1)).*abs(fft(sigr6))))));
-
+xcor23_PHAT=abs(fftshift(ifft((fft(sigr2).*conj(fft(sigr3)))./(abs(fft(sigr2)).*abs(fft(sigr3))))));
+xcor24_PHAT=abs(fftshift(ifft((fft(sigr2).*conj(fft(sigr4)))./(abs(fft(sigr2)).*abs(fft(sigr4))))));
+xcor25_PHAT=abs(fftshift(ifft((fft(sigr2).*conj(fft(sigr5)))./(abs(fft(sigr2)).*abs(fft(sigr5))))));
+%{
 figure()
 hold on;box on
 subplot(2,3,1)
@@ -192,7 +195,7 @@ subplot(2,3,5)
 plot(1:length(xcor16_PHAT),(xcor16_PHAT))
 
 title('Generalized Cross-correlation using phase transform')
-
+%}
 %{
 % Smoothed Coherence Transform (SCOT)
 xcor12_SCOT=fftshift(ifft((fft(sigr1).*conj(fft(sigr2)))./(sqrt(fft(sigr1).*conj(fft(sigr1)).*fft(sigr2).*conj(fft(sigr2))))));
@@ -226,15 +229,18 @@ Actual_Arrival(4)=(sqrt((rx+d)^2+ry^2+rz^2)/Propagation_Speed);
 Actual_Arrival(5)=(sqrt(rx^2+(ry+d)^2+rz^2)/Propagation_Speed);
 Actual_Arrival(6)=(sqrt(rx^2+ry^2+(rz-d)^2)/Propagation_Speed);
 
-Actual_difference=zeros(1,4);
+Actual_difference=zeros(1,8);
 Actual_difference(1)=Actual_Arrival(1)-Actual_Arrival(2);
 Actual_difference(2)=Actual_Arrival(1)-Actual_Arrival(3);
 Actual_difference(3)=Actual_Arrival(1)-Actual_Arrival(4);
 Actual_difference(4)=Actual_Arrival(1)-Actual_Arrival(5);
 Actual_difference(5)=Actual_Arrival(1)-Actual_Arrival(6);
+Actual_difference(6)=Actual_Arrival(2)-Actual_Arrival(3);  
+Actual_difference(7)=Actual_Arrival(2)-Actual_Arrival(4);
+Actual_difference(8)=Actual_Arrival(2)-Actual_Arrival(5);
 
-Peak_Value=zeros(1,5);
-Estimated_difference=zeros(1,5);
+Peak_Value=zeros(1,8);
+Estimated_difference=zeros(1,8);
 for i=1:length(xcor12_PHAT)
     if xcor12_PHAT(i)>Peak_Value(1)
         Estimated_difference(1)=(i-0.1*fs-1);
@@ -256,11 +262,30 @@ for i=1:length(xcor12_PHAT)
         Estimated_difference(5)=(i-0.1*fs-1);
         Peak_Value(5)=xcor16_PHAT(i);
     end
+    if xcor23_PHAT(i)>Peak_Value(6)
+        Estimated_difference(6)=(i-0.1*fs-1);
+        Peak_Value(6)=xcor23_PHAT(i);
+    end
+    if xcor24_PHAT(i)>Peak_Value(7)
+        Estimated_difference(7)=(i-0.1*fs-1);
+        Peak_Value(7)=xcor24_PHAT(i);
+    end
+    if xcor25_PHAT(i)>Peak_Value(8)
+        Estimated_difference(8)=(i-0.1*fs-1);
+        Peak_Value(8)=xcor25_PHAT(i);
+    end
 end
 Estimated_difference=Estimated_difference/fs;
 Distance_difference=Estimated_difference*Propagation_Speed;
 Actual_Distance=Actual_difference*Propagation_Speed;
-
+d01=Distance_difference(1);
+d02=Distance_difference(2);
+d03=Distance_difference(3);
+d04=Distance_difference(4);
+d05=Distance_difference(5);
+d12=Distance_difference(6);
+d13=Distance_difference(7);
+d14=Distance_difference(8);
 Distance_difference
 Actual_Distance
 %% Triangulation
@@ -277,5 +302,34 @@ sqrt(x^2+y^2+z^2)-sqrt(x^2+(y+d)^2+z^2)==Distance_difference(4));
 u=Distance_difference(1)/d;
 v=Distance_difference(2)/d;
 w=Distance_difference(5)/d;
-%Use law of cosine%
-u,v,w
+Unit_vector=[u,v,w];
+
+%Direct form %
+%x=-(d13*(d12^2+d14^2-d12*d13-d13*d14))/(4*d*(d12-d13+d14));
+
+%Gillete-Silverman Algorithm%
+%{
+w01=0.5*(d01^2-d^2);
+w02=0.5*(d02^2-d^2);
+w03=0.5*(d03^2-d^2);
+w04=0.5*(d04^2-d^2);
+Matrix=[-d,0,0,d01;...
+        0,-d,0,d02;...
+         d,0,0,d03;...
+         0,d,0,d04];
+W=[w01;w02;w03;w04];
+Var=inv(Matrix)*W;
+%}
+
+%Double Far-field simplification
+theta0S=atand(sqrt(w^2+v^2)/u);
+theta02=acosd(abs(Distance_difference(3))/d);
+syms x
+x=solve(tand(theta0S)*x==(d+x)*tand(theta02));
+y=x*v/u;
+z=x*w/u;
+Far_field_sol=[x,y,z];
+
+% Use unit-vector direct form
+syms m
+m=solve(sqrt(m^2+(v*m/u)^2+(w*m/u)^2)-Actual_Distance(3)==sqrt((m+d)^2+(v*m/u)^2+(w*m/u)^2));
