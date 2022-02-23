@@ -8,7 +8,7 @@ clear;clc;close all;
 %% Initialization
 
 r=38.2978/1000; %In milimeter, radius of the circular array%
-rx=8;ry=8;rz=0; %Source Location
+rx=4;ry=6;rz=0; %Source Location
 rxULA = phased.OmnidirectionalMicrophoneElement;
 rxpos1 = [0;0;0];
 rxvel1 = [0;0;0];
@@ -135,16 +135,18 @@ xcor16_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr6)))./(abs(fft(sigr1)).*
 xcor17_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr7)))./(abs(fft(sigr1)).*abs(fft(sigr7))))));
 xcor18_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr8)))./(abs(fft(sigr1)).*abs(fft(sigr8))))));
 
-Actual_Arrival=zeros(1,4);
+Actual_Arrival=zeros(1,5);
 Actual_Arrival(1)=sqrt(rx^2+ry^2+rz^2)/Propagation_Speed;
 Actual_Arrival(2)=sqrt((rx+0.03813)^2+(ry-0.00358)^2+rz^2)/Propagation_Speed;
 Actual_Arrival(3)=sqrt((rx+0.02098)^2+(ry-0.03204)^2+rz^2)/Propagation_Speed;
 Actual_Arrival(4)=sqrt((rx-0.01197)^2+(ry-0.03638)^2+rz^2)/Propagation_Speed;
+Actual_Arrival(5)=sqrt((rx-0.03591)^2+(ry-0.01332)^2+rz^2)/Propagation_Speed;
 
-Actual_difference=zeros(1,3);
+Actual_difference=zeros(1,4);
 Actual_difference(1)=Actual_Arrival(1)-Actual_Arrival(2);
 Actual_difference(2)=Actual_Arrival(1)-Actual_Arrival(3);
 Actual_difference(3)=Actual_Arrival(1)-Actual_Arrival(4);
+Actual_difference(4)=Actual_Arrival(1)-Actual_Arrival(5);
 
 Peak_Value=zeros(1,7);
 Estimated_difference=zeros(1,7);
@@ -180,8 +182,8 @@ for i=1:length(xcor12_PHAT)
     end
 end
 Estimated_difference=Estimated_difference/fs;
-Distance_difference=Estimated_difference*Propagation_Speed;
-Actual_Distance=Actual_difference*Propagation_Speed;
+Distance_difference=Estimated_difference*Propagation_Speed
+Actual_Distance=Actual_difference*Propagation_Speed
 
 d12=Distance_difference(1);
 d13=Distance_difference(2);
@@ -191,6 +193,7 @@ d16=Distance_difference(5);
 d17=Distance_difference(6);
 d18=Distance_difference(7);
 
+
 %Distance_Matrix=[-38.13,3.58;-20.98,32.04]/1000;
 
 %v=(1817.45*d13+1000*d12)/54.65;
@@ -199,7 +202,7 @@ theta2=acosd(abs(d12)/0.0383)-5.3637
 theta3=90-(acosd(abs(d13)/0.0383)-33.217)
 theta6=acosd(abs(d16)/0.0383)-20.3512
 theta7=180-82.5-acosd(abs(d17)/0.0383)
-
+sig=[sigr1,sigr2,sigr3,sigr4,sigr5,sigr6,sigr7,sigr7];
 average_theta=(theta3+theta2+theta6+theta7)/4;
 if abs(theta2-average_theta)>10
     Estimated_angle=(theta3+theta6+theta7)/3;
