@@ -8,7 +8,7 @@ clear;clc;close all;
 %% Initialization
 
 r=38.2978/1000; %In milimeter, radius of the circular array%
-rx=4;ry=6;rz=0; %Source Location
+rx=6;ry=0;rz=0; %Source Location
 rxULA = phased.OmnidirectionalMicrophoneElement;
 rxpos1 = [0;0;0];
 rxvel1 = [0;0;0];
@@ -194,30 +194,37 @@ d17=Distance_difference(6);
 d18=Distance_difference(7);
 
 
-%Distance_Matrix=[-38.13,3.58;-20.98,32.04]/1000;
-
-%v=(1817.45*d13+1000*d12)/54.65;
-%u=(3.58*v-1000*d12)/38.13;
-theta2=acosd(abs(d12)/0.0383)-5.3637
-theta3=90-(acosd(abs(d13)/0.0383)-33.217)
-theta6=acosd(abs(d16)/0.0383)-20.3512
-theta7=180-82.5-acosd(abs(d17)/0.0383)
-sig=[sigr1,sigr2,sigr3,sigr4,sigr5,sigr6,sigr7,sigr7];
-average_theta=(theta3+theta2+theta6+theta7)/4;
-if abs(theta2-average_theta)>10
-    Estimated_angle=(theta3+theta6+theta7)/3;
-elseif abs(theta3-average_theta)>10
-    Estimated_angle=(theta2+theta6+theta7)/3;
-elseif abs(theta6-average_theta)>10
-    Estimated_angle=(theta2+theta3+theta7)/3;
-elseif abs(theta7-average_theta)>10
-    Estimated_angle=(theta2+theta6+theta3)/3;
-else
-    Estimated_angle=(theta3+theta2+theta6+theta7)/4;
+if d14>=0 && d15>=0 && d12<=0 && d17<=0
+    theta2=acosd(abs(d12)/0.0383)-5.3637
+    theta4=71.7874-acosd(abs(d14)/0.0383)
+    theta5=acosd(abs(d15)/0.0383)+20.3512
+    theta7=180-82.5-acosd(abs(d17)/0.0383)
+    Estimation=Outlier_Check(theta2,theta4,theta5,theta7)
+    real_angle=atand(ry/rx)
+elseif d13>=0 && d14>=0 && d18<=0 && d16<=0
+    theta4=acosd(abs(d14)/0.0383)+71.7874
+    theta3=90-(acosd(abs(d13)/0.0383)+33.217)
+    theta6=180-acosd(abs(d16)/0.0383)-31.07149
+    theta8=acosd(abs(d18)/0.0383)+46.06855
+    Estimation=Outlier_Check(theta3,theta4,theta6,theta8)
+    real_angle=atand(ry/rx)
+elseif d12>=0 && d13>=0 && d15<=0 && d17<=0
+    theta2=180-acosd(abs(d12)/0.0383)-5.3637
+    theta3=180-56.78296+acosd(abs(d13)/0.0383)
+    theta5=180-acosd(abs(d15)/0.0383)+20.35119
+    theta7=90+acosd(abs(d17)/0.0383)
+    Estimation=Outlier_Check(theta2,theta3,theta5,theta7)
+    real_angle=atand(ry/rx)
+elseif d15>=0 && d16>=0 && d13<=0 && d18<=0
+    theta5=20.35119-acosd(abs(d15)/0.0383)
+    theta6=-31.07149+acosd(abs(d16)/0.0383)
+    theta3=acosd(abs(d13)/0.0383)-56.78296
+    theta8=46.06855-acosd(abs(d18)/0.0383)
+    Estimation=Outlier_Check(theta6,theta3,theta5,theta8)
+    real_angle=atand(ry/rx)
 end
-Estimated_angle
-real_angle=atand(ry/rx)
-
+    
+    
 
 
 
