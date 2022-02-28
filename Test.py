@@ -134,23 +134,62 @@ d16=Est_distance[4]
 d17=Est_distance[5]
 d18=Est_distance[6]
 
+def Outlier(a1,a2,a3,a4):
+    average=(a1+a2+a3+a4)/4
+    if abs(a1-average)>10:
+        Estimation=(a2+a3+a4)/3
+    elif abs(a2-average)>10:
+        Estimation=(a1+a3+a4)/3
+    elif abs(a3-average)>10:
+        Estimation=(a2+a1+a4)/3
+    elif abs(a4-average)>10:
+        Estimation=(a2+a3+a1)/3
+    else:
+        Estimation=average
+    return Estimation
+
+if d12>0.0383:
+    d12=0.0383
+if d13>0.0383:
+    d13=0.0383
+if d14>0.0383:
+    d14=0.0383
+if d15>0.0383:
+    d15=0.0383
+if d16>0.0383:
+    d16=0.0383
+if d17>0.0383:
+    d17=0.0383
+if d18>0.0383:
+    d18=0.0383
+
 theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
 theta3=90-(180*math.acos(abs(d13)/0.0383)/math.pi-33.217)
 theta6=180*math.acos(abs(d16)/0.0383)/math.pi-20.3512
 theta7=180-82.5-180*math.acos(abs(d17)/0.0383)/math.pi
 
-avg_theta=(theta3+theta2+theta6+theta7)/4
-
-if abs(theta2-avg_theta)>10:
-    Estimated_angle=(theta3+theta6+theta7)/3
-elif abs(theta3-avg_theta)>10:
-    Estimated_angle=(theta2+theta6+theta7)/3
-elif abs(theta6-avg_theta)>10:
-    Estimated_angle=(theta2+theta3+theta7)/3
-elif abs(theta7-avg_theta)>10:
-    Estimated_angle=(theta2+theta6+theta3)/3
-else:
-    Estimated_angle=(theta3+theta2+theta6+theta7)/4
-
-
-print(Estimated_angle)
+if d14>=0 and d15>=0 and d12<=0 and d17<=0:
+    theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
+    theta4=71.7874-180*math.acos(abs(d14)/0.0383)/math.pi
+    theta5=180*math.acos(abs(d15)/0.0383)/math.pi+20.3512
+    theta7=180-82.5-180*math.acos(abs(d17)/0.0383)/math.pi
+    Estimation=Outlier(theta2,theta4,theta5,theta7)
+elif d13>=0 and d14>=0 and d18<=0 and d16<=0:
+    theta4=180*math.acos(abs(d14)/0.0383)/math.pi+71.7874
+    theta3=90-180*math.acos(abs(d13)/0.0383)/math.pi+33.217
+    theta6=180-180*math.acos(abs(d16)/0.0383)/math.pi-31.07149
+    theta8=math.acos(abs(d18)/0.0383)/math.pi+46.06855
+    Estimation=Outlier(theta3,theta4,theta6,theta8)
+elif d12>=0 and d13>=0 and d15<=0 and d17<=0:
+    theta2=180-180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
+    theta3=180-56.78296+180*math.acos(abs(d13)/0.0383)/math.pi
+    theta5=180-math.acos(abs(d15)/0.0383)/math.pi+20.35119
+    theta7=90+math.acos(abs(d17)/0.0383)/math.pi
+    Estimation=Outlier(theta2,theta3,theta5,theta7)
+elif d15>=0 and d16>=0 and d13<=0 and d18<=0:
+    theta5=20.35119-math.acos(abs(d15)/0.0383)/math.pi
+    theta6=-31.07149+math.acos(abs(d16)/0.0383)/math.pi
+    theta3=math.acos(abs(d13)/0.0383)/math.pi-56.78296
+    theta8=46.06855-math.acos(abs(d18)/0.0383)/math.pi
+    Estimation=Outlier(theta6,theta3,theta5,theta8)
+print(Estimation)
