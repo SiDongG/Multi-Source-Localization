@@ -1,4 +1,4 @@
-function[Estimation,real]=Estimation_simulation(rx,ry)
+function[Estimation_angle,real_angle,Estimation_distance,real_distance]=Estimation_simulation(rx,ry)
 r=38.2978/1000; %In milimeter, radius of the circular array%
 rz=0; %Source Location
 rxULA = phased.OmnidirectionalMicrophoneElement;
@@ -116,6 +116,9 @@ sigr6 = collector6(sigp6,ang6_receive);
 sigr7 = collector7(sigp7,ang7_receive);
 sigr8 = collector8(sigp8,ang8_receive);
 
+Estimation_distance=10^(-0.5*log10(rms(sigr1)^2)-4.062);
+real_distance=sqrt(rx^2+ry^2+rz^2);
+
 xcor12_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr2)))./(abs(fft(sigr1)).*abs(fft(sigr2))))));
 xcor13_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr3)))./(abs(fft(sigr1)).*abs(fft(sigr3))))));
 xcor14_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr4)))./(abs(fft(sigr1)).*abs(fft(sigr4))))));
@@ -187,48 +190,48 @@ if d14>=0 && d15>=0 && d12<=0 && d17<=0
     theta4=71.7874-acosd(abs(d14)/r);
     theta5=acosd(abs(d15)/r)+20.3512;
     theta7=180-82.5-acosd(abs(d17)/r);
-    Estimation=Outlier_Check(theta2,theta4,theta5,theta7);
-    real=angle(rx,ry);
+    Estimation_angle=Outlier_Check(theta2,theta4,theta5,theta7);
+    real_angle=angle(rx,ry);
 elseif d13>=0 && d14>=0 && d18<=0 && d16<=0
     theta4=acosd(abs(d14)/r)+71.7874;
     theta3=90-(acosd(abs(d13)/r)+33.217);
     theta6=180-acosd(abs(d16)/r)-31.07149;
     theta8=acosd(abs(d18)/r)+46.06855;
-    Estimation=Outlier_Check(theta3,theta4,theta6,theta8);
-    real=angle(rx,ry);
+    Estimation_angle=Outlier_Check(theta3,theta4,theta6,theta8);
+    real_angle=angle(rx,ry);
 elseif d12>=0 && d13>=0 && d15<=0 && d17<=0
     theta2=180-acosd(abs(d12)/r)-5.3637;
     theta3=180-56.78296+acosd(abs(d13)/r);
     theta5=180-acosd(abs(d15)/r)+20.35119;
     theta7=90+acosd(abs(d17)/r);
-    Estimation=Outlier_Check(theta2,theta3,theta5,theta7);
-    real=angle(rx,ry);
+    Estimation_angle=Outlier_Check(theta2,theta3,theta5,theta7);
+    real_angle=angle(rx,ry);
 elseif d15>=0 && d16>=0 && d13<=0 && d18<=0
     theta5=20.35119-acosd(abs(d15)/r);
     theta6=-31.07149+acosd(abs(d16)/r);
     theta3=acosd(abs(d13)/r)-56.78296;
     theta8=46.06855-acosd(abs(d18)/r);
-    Estimation=Outlier_Check(theta6,theta3,theta5,theta8);
-    real=angle(rx,ry);
+    Estimation_angle=Outlier_Check(theta6,theta3,theta5,theta8);
+    real_angle=angle(rx,ry);
 elseif d16>=0 && d17>=0 && d12<=0 && d14<=0
     theta6=-31.07149-acosd(abs(d16)/r);
     theta7=-82.49829+acosd(abs(d17)/r);
     theta2=-acosd(abs(d12)/r)-5.36374;
     theta4=71.7874+acosd(abs(d14)/r)-180;
-    Estimation=Outlier_Check(theta6,theta7,theta2,theta4);
-    real=angle(rx,ry);
+    Estimation_angle=Outlier_Check(theta6,theta7,theta2,theta4);
+    real_angle=angle(rx,ry);
 elseif d17>=0 && d18>=0 && d13<=0 && d15<=0
     theta7=-82.49829-acosd(abs(d17)/r);
     theta8=46.06855+acosd(abs(d18)/r)-180;
     theta3=-acosd(abs(d13)/r)-56.78296;
     theta5=20.35119+acosd(abs(d15)/r)-180;
-    Estimation=Outlier_Check(theta8,theta7,theta3,theta5);
-    real=angle(rx,ry);
+    Estimation_angle=Outlier_Check(theta8,theta7,theta3,theta5);
+    real_angle=angle(rx,ry);
 elseif d12>=0 && d18>=0 && d14<=0 && d16<=0
     theta2=acosd(abs(d12)/r)-5.36374-180;
     theta8=46.06855-acosd(abs(d18)/r)-180;
     theta4=71.7874-acosd(abs(d14)/r)-180;
     theta6=acosd(abs(d16)/r)-31.07149-180;
-    Estimation=Outlier_Check(theta8,theta2,theta4,theta6);
-    real=angle(rx,ry);
+    Estimation_angle=Outlier_Check(theta8,theta2,theta4,theta6);
+    real_angle=angle(rx,ry);
 end
