@@ -8,7 +8,7 @@ clear;clc;close all;
 %% Initialization
 
 r=38.2978/1000; %In milimeter, radius of the circular array%
-rx=6;ry=0;rz=0; %Source Location
+rx=0.0000001;ry=-0;rz=0; %Source Location
 rxULA = phased.OmnidirectionalMicrophoneElement;
 rxpos1 = [0;0;0];
 rxvel1 = [0;0;0];
@@ -127,6 +127,8 @@ sigr6 = collector6(sigp6,ang6_receive);
 sigr7 = collector7(sigp7,ang7_receive);
 sigr8 = collector8(sigp8,ang8_receive);
 
+plot(1:length(sigr1),sigr1)
+
 xcor12_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr2)))./(abs(fft(sigr1)).*abs(fft(sigr2))))));
 xcor13_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr3)))./(abs(fft(sigr1)).*abs(fft(sigr3))))));
 xcor14_PHAT=abs(fftshift(ifft((fft(sigr1).*conj(fft(sigr4)))./(abs(fft(sigr1)).*abs(fft(sigr4))))));
@@ -193,7 +195,6 @@ d16=Distance_difference(5);
 d17=Distance_difference(6);
 d18=Distance_difference(7);
 
-
 if d14>=0 && d15>=0 && d12<=0 && d17<=0
     theta2=acosd(abs(d12)/0.0383)-5.3637
     theta4=71.7874-acosd(abs(d14)/0.0383)
@@ -221,6 +222,27 @@ elseif d15>=0 && d16>=0 && d13<=0 && d18<=0
     theta3=acosd(abs(d13)/0.0383)-56.78296
     theta8=46.06855-acosd(abs(d18)/0.0383)
     Estimation=Outlier_Check(theta6,theta3,theta5,theta8)
+    real_angle=atand(ry/rx)
+elseif d16>=0 && d17>=0 && d12<=0 && d14<=0
+    theta6=-31.07149-acosd(abs(d16)/0.0383)
+    theta7=-82.49829+acosd(abs(d17)/0.0383)
+    theta2=-acosd(abs(d12)/0.0383)-5.36374
+    theta4=71.7874+acosd(abs(d14)/0.0383)-180
+    Estimation=Outlier_Check(theta6,theta7,theta2,theta4)
+    real_angle=atand(ry/rx)
+elseif d17>=0 && d18>=0 && d13<=0 && d15<=0
+    theta7=-82.49829-acosd(abs(d17)/0.0383)
+    theta8=46.06855+acosd(abs(d18)/0.0383)-180
+    theta3=-acosd(abs(d13)/0.0383)-56.78296
+    theta5=20.35119+acosd(abs(d15)/0.0383)-180
+    Estimation=Outlier_Check(theta8,theta7,theta3,theta5)
+    real_angle=atand(ry/rx)
+elseif d12>=0 && d18>=0 && d14<=0 && d16<=0
+    theta2=acosd(abs(d12)/0.0383)-5.36374-180
+    theta8=46.06855-acosd(abs(d18)/0.0383)-180
+    theta4=71.7874-acosd(abs(d14)/0.0383)-180
+    theta6=acosd(abs(d16)/0.0383)-31.07149-180
+    Estimation=Outlier_Check(theta8,theta2,theta4,theta6)
     real_angle=atand(ry/rx)
 end
     
