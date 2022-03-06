@@ -11,6 +11,8 @@ import csv
 import math
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
+from statistics import variance
+from statistics import mean
 
 fs=16000;
 print (os.path.exists("matlab.mat"))
@@ -135,39 +137,120 @@ d17=Est_distance[5]
 d18=Est_distance[6]
 
 def Outlier(a1,a2,a3,a4):
-    average=(a1+a2+a3+a4)/4
-    if abs(a1-average)>10:
-        Estimation=(a2+a3+a4)/3
-    elif abs(a2-average)>10:
-        Estimation=(a1+a3+a4)/3
-    elif abs(a3-average)>10:
-        Estimation=(a2+a1+a4)/3
-    elif abs(a4-average)>10:
-        Estimation=(a2+a3+a1)/3
+    if a1==360:
+        var0=variance((a2,a3,a4))
+        var1=variance((a2,a3))
+        var2=variance((a2,a4))
+        var3=variance((a3,a4))
+        Minimum=min(var0,var1,var2,var3)
+        if var0<10:
+            Estimation=(a2+a3+a4)/3
+        else:
+            if Minimum==var0:
+                Estimation=(a2+a3+a4)/3
+            elif Minimum==var1:
+                Estimation=(a2+a3)/2
+            elif Minimum==var2:
+                Estimation=(a2+a4)/2
+            else:
+                Estimation=(a3+a4)/2
+        State=1
+    elif a2==360:
+         var0=variance((a1,a3,a4))
+         var1=variance((a1,a3))
+         var2=variance((a1,a4))
+         var3=variance((a3,a4))
+         Minimum=min(var0,var1,var2,var3)
+         if var0<10:
+             Estimation=(a1+a3+a4)/3
+         else:
+             if Minimum==var0:
+                 Estimation=(a1+a3+a4)/3
+             elif Minimum==var1:
+                 Estimation=(a1+a3)/2
+             elif Minimum==var2:
+                 Estimation=(a1+a4)/2
+             else:
+                 Estimation=(a3+a4)/2
+         State=1
+    elif a3==360:
+           var0=variance((a1,a2,a4))
+           var1=variance((a1,a2))
+           var2=variance((a1,a4))
+           var3=variance((a2,a4))
+           Minimum=min(var0,var1,var2,var3)
+           if var0<10:
+                Estimation=(a1+a2+a4)/3
+           else:
+                if Minimum==var0:
+                     Estimation=(a1+a2+a4)/3
+                elif Minimum==var1:
+                     Estimation=(a1+a2)/2
+                elif Minimum==var2:
+                     Estimation=(a1+a4)/2
+                else:
+                     Estimation=(a2+a4)/2
+           State=1
+    elif a4==360:
+            var0=variance((a1,a2,a3))
+            var1=variance((a1,a2))
+            var2=variance((a1,a3))
+            var3=variance((a2,a3))
+            Minimum=min(var0,var1,var2,var3)
+            if var0<10:
+                Estimation=(a1+a2+a3)/3
+            else:
+                if Minimum==var0:
+                    Estimation=(a1+a2+a3)/3
+                elif Minimum==var1:
+                    Estimation=(a1+a2)/2
+                elif Minimum==var2:
+                    Estimation=(a1+a3)/2
+                else:
+                    Estimation=(a2+a3)/2
+            State=1
     else:
-        Estimation=average
-    return Estimation
+        State=0
 
-if d12>0.0383:
-    d12=0.0383
-if d13>0.0383:
-    d13=0.0383
-if d14>0.0383:
-    d14=0.0383
-if d15>0.0383:
-    d15=0.0383
-if d16>0.0383:
-    d16=0.0383
-if d17>0.0383:
-    d17=0.0383
-if d18>0.0383:
-    d18=0.0383
+    if State==0:
+        var0=variance((a1,a2,a3,a4))
+        var1=variance((a1,a2,a3))
+        var2=variance((a1,a2,a4))
+        var3=variance((a1,a3,a4))
+        var4=variance((a2,a3,a4))
+        Min=min(var0,var1,var2,var3,var4)
+        if var0<20:
+            Estimation=mean((a1,a2,a3,a4))
+        else:
+            if Min==var1:
+                Estimation=(a1+a2+a3)/3
+            elif Min==var2:
+                Estimation=(a1+a2+a4)/3
+            elif Min==var3:
+                Estimation=(a1+a3+a4)/3
+            elif Min==var4:
+                Estimation=(a2+a3+a4)/3
+            else:
+                Estimation=(a1+a2+a3+a4)/4
+    return Estimation 
 
 if d14>=0 and d15>=0 and d12<=0 and d17<=0:
-    theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
-    theta4=71.7874-180*math.acos(abs(d14)/0.0383)/math.pi
-    theta5=180*math.acos(abs(d15)/0.0383)/math.pi+20.3512
-    theta7=180-82.5-180*math.acos(abs(d17)/0.0383)/math.pi
+    try:
+        theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
+    except:
+        theta2=360
+    try:
+        theta4=71.7874-180*math.acos(abs(d14)/0.0383)/math.pi
+    except:
+        theta4=360
+    try:
+        theta5=180*math.acos(abs(d15)/0.0383)/math.pi+20.3512
+    except:
+        theta5=360
+    try:
+        theta7=180-82.5-180*math.acos(abs(d17)/0.0383)/math.pi
+    except:
+        theta7=360
     Estimation=Outlier(theta2,theta4,theta5,theta7)
 elif d13>=0 and d14>=0 and d18<=0 and d16<=0:
     theta4=180*math.acos(abs(d14)/0.0383)/math.pi+71.7874
@@ -182,27 +265,27 @@ elif d12>=0 and d13>=0 and d15<=0 and d17<=0:
     theta7=90+math.acos(abs(d17)/0.0383)/math.pi
     Estimation=Outlier(theta2,theta3,theta5,theta7)
 elif d15>=0 and d16>=0 and d13<=0 and d18<=0:
-    theta5=20.35119-math.acos(abs(d15)/0.0383)/math.pi
-    theta6=-31.07149+math.acos(abs(d16)/0.0383)/math.pi
-    theta3=math.acos(abs(d13)/0.0383)/math.pi-56.78296
-    theta8=46.06855-math.acos(abs(d18)/0.0383)/math.pi
+    theta5=20.35119-180*math.acos(abs(d15)/0.0383)/math.pi
+    theta6=-31.07149+180*math.acos(abs(d16)/0.0383)/math.pi
+    theta3=180*math.acos(abs(d13)/0.0383)/math.pi-56.78296
+    theta8=46.06855-180*math.acos(abs(d18)/0.0383)/math.pi
     Estimation=Outlier(theta6,theta3,theta5,theta8)
-elif d16>=0 and d17>=0 and d12<=0 and d14<=0
-    theta6=-31.07149-math.acos(abs(d16)/0.0383)/math.pi
-    theta7=-82.49829+math.acos(abs(d17)/0.0383)/math.pi
-    theta2=-math.acos(abs(d12)/0.0383)/math.pi-5.36374
-    theta4=71.7874+math.acos(abs(d14)/0.0383)/math.pi-180
+elif d16>=0 and d17>=0 and d12<=0 and d14<=0:
+    theta6=-31.07149-180*math.acos(abs(d16)/0.0383)/math.pi
+    theta7=-82.49829+180*math.acos(abs(d17)/0.0383)/math.pi
+    theta2=-180*math.acos(abs(d12)/0.0383)/math.pi-5.36374
+    theta4=71.7874+180*math.acos(abs(d14)/0.0383)/math.pi-180
     Estimation=Outlier(theta6,theta7,theta2,theta4)
-elif d17>=0 and d18>=0 and d13<=0 and d15<=0
-    theta7=-82.49829-math.acos(abs(d17)/0.0383)/math.pi
-    theta8=46.06855+math.acos(abs(d18)/0.0383)/math.pi-180
-    theta3=-math.acos(abs(d13)/0.0383)/math.pi-56.78296
-    theta5=20.35119+,math.acos(abs(d15)/0.0383)/math.pi-180
+elif d17>=0 and d18>=0 and d13<=0 and d15<=0:
+    theta7=-82.49829-180*math.acos(abs(d17)/0.0383)/math.pi
+    theta8=46.06855+180*math.acos(abs(d18)/0.0383)/math.pi-180
+    theta3=-180*math.acos(abs(d13)/0.0383)/math.pi-56.78296
+    theta5=20.35119+180*math.acos(abs(d15)/0.0383)/math.pi-180
     Estimation=Outlier(theta8,theta7,theta3,theta5)
-elif d12>=0 and d18>=0 and d14<=0 and d16<=0
-    theta2=math.acos(abs(d12)/0.0383)/math.pi-5.36374-180
-    theta8=46.06855-math.acos(abs(d18)/0.0383)/math.pi-180
-    theta4=71.7874-math.acos(abs(d14)/0.0383)/math.pi-180
-    theta6=math.acos(abs(d16)/0.0383)/math.pi-31.07149-180
+elif d12>=0 and d18>=0 and d14<=0 and d16<=0:
+    theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.36374-180
+    theta8=46.06855-180*math.acos(abs(d18)/0.0383)/math.pi-180
+    theta4=71.7874-180*math.acos(abs(d14)/0.0383)/math.pi-180
+    theta6=180*math.acos(abs(d16)/0.0383)/math.pi-31.07149-180
     Estimation=Outlier(theta8,theta2,theta4,theta6)
 print(Estimation)
