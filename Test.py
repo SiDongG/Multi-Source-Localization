@@ -163,11 +163,6 @@ if d17>0.0383:
 if d18>0.0383:
     d18=0.0383
 
-theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
-theta3=90-(180*math.acos(abs(d13)/0.0383)/math.pi-33.217)
-theta6=180*math.acos(abs(d16)/0.0383)/math.pi-20.3512
-theta7=180-82.5-180*math.acos(abs(d17)/0.0383)/math.pi
-
 if d14>=0 and d15>=0 and d12<=0 and d17<=0:
     theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
     theta4=71.7874-180*math.acos(abs(d14)/0.0383)/math.pi
@@ -192,4 +187,22 @@ elif d15>=0 and d16>=0 and d13<=0 and d18<=0:
     theta3=math.acos(abs(d13)/0.0383)/math.pi-56.78296
     theta8=46.06855-math.acos(abs(d18)/0.0383)/math.pi
     Estimation=Outlier(theta6,theta3,theta5,theta8)
+elif d16>=0 and d17>=0 and d12<=0 and d14<=0
+    theta6=-31.07149-math.acos(abs(d16)/0.0383)/math.pi
+    theta7=-82.49829+math.acos(abs(d17)/0.0383)/math.pi
+    theta2=-math.acos(abs(d12)/0.0383)/math.pi-5.36374
+    theta4=71.7874+math.acos(abs(d14)/0.0383)/math.pi-180
+    Estimation=Outlier(theta6,theta7,theta2,theta4)
+elif d17>=0 and d18>=0 and d13<=0 and d15<=0
+    theta7=-82.49829-math.acos(abs(d17)/0.0383)/math.pi
+    theta8=46.06855+math.acos(abs(d18)/0.0383)/math.pi-180
+    theta3=-math.acos(abs(d13)/0.0383)/math.pi-56.78296
+    theta5=20.35119+,math.acos(abs(d15)/0.0383)/math.pi-180
+    Estimation=Outlier(theta8,theta7,theta3,theta5)
+elif d12>=0 and d18>=0 and d14<=0 and d16<=0
+    theta2=math.acos(abs(d12)/0.0383)/math.pi-5.36374-180
+    theta8=46.06855-math.acos(abs(d18)/0.0383)/math.pi-180
+    theta4=71.7874-math.acos(abs(d14)/0.0383)/math.pi-180
+    theta6=math.acos(abs(d16)/0.0383)/math.pi-31.07149-180
+    Estimation=Outlier(theta8,theta2,theta4,theta6)
 print(Estimation)
