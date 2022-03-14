@@ -7,14 +7,11 @@ from scipy.io import wavfile
 import scipy.io
 import numpy as np
 import os
-import csv
 import math
-import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
 from statistics import variance
 from statistics import mean
 
-fs=16000;
+fs=16000
 print (os.path.exists("matlab.mat"))
 data_dir = pjoin(dirname(scipy.io.__file__), 'tests', 'data')
 wav_fname = pjoin(data_dir, 'output.wav')
@@ -27,17 +24,6 @@ samplerate, data6 = wavfile.read('channel_5.wav')
 samplerate, data7 = wavfile.read('channel_6.wav')
 samplerate, data8 = wavfile.read('channel_7.wav')
 
-print('1')
-
-#cwd = os.getcwd()  
-#files = os.listdir(cwd) 
-#print("Files in %r: %s" % (cwd, files))
-
-#print(mat['sig'])
-
-#print(total)
-#print(len(data))
-#print(len(data[0]))
 mic1=data1
 mic2=data2
 mic3=data3
@@ -46,17 +32,6 @@ mic5=data5
 mic6=data6
 mic7=data7
 mic8=data8
-
-fig, axs = plt.subplots(2, 2)
-axs[0, 0].plot(np.arange(len(mic1)), mic1)
-axs[0, 0].set_title('Channel1')
-axs[0, 1].plot(np.arange(len(mic2)), mic2, 'tab:orange')
-axs[0, 1].set_title('Channel2')
-axs[1, 0].plot(np.arange(len(mic3)), mic3, 'tab:green')
-axs[1, 0].set_title('Channel3')
-axs[1, 1].plot(np.arange(len(mic7)), mic7, 'tab:red')
-axs[1, 1].set_title('Channel7')
-plt.show()
 
 cor11=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic1)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic1)))
 xcor11=abs(np.fft.fftshift(np.fft.ifft(cor11)))
@@ -74,17 +49,6 @@ cor17=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic7)),abs(np.fft.fft(mic1))
 xcor17=abs(np.fft.fftshift(np.fft.ifft(cor17)))
 cor18=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic8)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic8)))
 xcor18=abs(np.fft.fftshift(np.fft.ifft(cor18)))
-
-fig, axs = plt.subplots(2, 2)
-axs[0, 0].plot(np.arange(len(xcor12)), xcor12)
-axs[0, 0].set_title('xcor12')
-axs[0, 1].plot(np.arange(len(xcor13)), xcor13, 'tab:orange')
-axs[0, 1].set_title('xcor13')
-axs[1, 0].plot(np.arange(len(xcor16)), xcor16, 'tab:green')
-axs[1, 0].set_title('xcor16')
-axs[1, 1].plot(np.arange(len(xcor17)), xcor17, 'tab:red')
-axs[1, 1].set_title('xcor17')
-plt.show()
 
 Peak=[0,0,0,0,0,0,0,0]
 Estimation=[0,0,0,0,0,0,0,0]
@@ -234,6 +198,15 @@ def Outlier(a1,a2,a3,a4):
                 Estimation=(a1+a2+a3+a4)/4
     return Estimation 
 
+def Sanity(a1,a2,a3,a4):
+    A=True
+    a=[a1,a2,a3,a4]
+    Value=a.count(360)
+    if Value>=2:
+        A=False
+    return A
+
+
 if d14>=0 and d15>=0 and d12<=0 and d17<=0:
     try:
         theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
@@ -251,41 +224,157 @@ if d14>=0 and d15>=0 and d12<=0 and d17<=0:
         theta7=180-82.5-180*math.acos(abs(d17)/0.0383)/math.pi
     except:
         theta7=360
-    Estimation=Outlier(theta2,theta4,theta5,theta7)
+    Check=Sanity(theta2,theta4,theta5,theta7)
+    if Check==False:
+        Estimation='Drop-Type1'
+    else:
+        Estimation=Outlier(theta2,theta4,theta5,theta7)
+    if Estimation!='Drop-Type1' and (Estimation>71.7874 or Estimation<20.35119):
+        Estimation='Drop-Type2'
 elif d13>=0 and d14>=0 and d18<=0 and d16<=0:
-    theta4=180*math.acos(abs(d14)/0.0383)/math.pi+71.7874
-    theta3=90-180*math.acos(abs(d13)/0.0383)/math.pi+33.217
-    theta6=180-180*math.acos(abs(d16)/0.0383)/math.pi-31.07149
-    theta8=math.acos(abs(d18)/0.0383)/math.pi+46.06855
-    Estimation=Outlier(theta3,theta4,theta6,theta8)
+    try:
+        theta4=180*math.acos(abs(d14)/0.0383)/math.pi+71.7874
+    except:
+        theta4=360
+    try: 
+        theta3=90-180*math.acos(abs(d13)/0.0383)/math.pi+33.217
+    except:
+        theta3=360
+    try:
+        theta6=180-180*math.acos(abs(d16)/0.0383)/math.pi-31.07149
+    except:
+        theta6=360
+    try:
+        theta8=180*math.acos(abs(d18)/0.0383)/math.pi+46.06855
+    except:
+        theta8=360
+    Check=Sanity(theta3,theta4,theta6,theta8)
+    if Check==False:
+        Estimation='Drop-Type1'
+    else:
+        Estimation=Outlier(theta3,theta4,theta6,theta8)
+    if Estimation!='Drop-Type1' and (Estimation<71.7874 or Estimation>123.21704):
+        Estimation='Drop-Type2'
 elif d12>=0 and d13>=0 and d15<=0 and d17<=0:
-    theta2=180-180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
-    theta3=180-56.78296+180*math.acos(abs(d13)/0.0383)/math.pi
-    theta5=180-math.acos(abs(d15)/0.0383)/math.pi+20.35119
-    theta7=90+math.acos(abs(d17)/0.0383)/math.pi
-    Estimation=Outlier(theta2,theta3,theta5,theta7)
+    try:
+        theta2=180-180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
+    except:
+        theta2=360
+    try:
+        theta3=180-56.78296+180*math.acos(abs(d13)/0.0383)/math.pi
+    except:
+        theta3=360
+    try:
+        theta5=180-180*math.acos(abs(d15)/0.0383)/math.pi+20.35119
+    except:
+        theta5=360
+    try:
+        theta7=90+180*math.acos(abs(d17)/0.0383)/math.pi
+    except:
+        theta7=360
+    Check=Sanity(theta2,theta3,theta5,theta7)
+    if Check==False:
+        Estimation='Drop-Type1'
+    else:
+        Estimation=Outlier(theta2,theta3,theta5,theta7)
+    if Estimation!='Drop-Type1' and (Estimation<123.21704 or Estimation>174.63626):
+        Estimation='Drop-Type2'
 elif d15>=0 and d16>=0 and d13<=0 and d18<=0:
-    theta5=20.35119-180*math.acos(abs(d15)/0.0383)/math.pi
-    theta6=-31.07149+180*math.acos(abs(d16)/0.0383)/math.pi
-    theta3=180*math.acos(abs(d13)/0.0383)/math.pi-56.78296
-    theta8=46.06855-180*math.acos(abs(d18)/0.0383)/math.pi
-    Estimation=Outlier(theta6,theta3,theta5,theta8)
+    try:
+        theta5=20.35119-180*math.acos(abs(d15)/0.0383)/math.pi
+    except:
+        theta5=360
+    try:
+        theta6=-31.07149+180*math.acos(abs(d16)/0.0383)/math.pi
+    except:
+        theta6=360
+    try:
+        theta3=180*math.acos(abs(d13)/0.0383)/math.pi-56.78296
+    except:
+        theta3=360
+    try:
+        theta8=46.06855-180*math.acos(abs(d18)/0.0383)/math.pi
+    except:
+        theta8=360
+    Check=Sanity(theta6,theta3,theta5,theta8)
+    if Check==False:
+        Estimation='Drop-Type1'
+    else:
+        Estimation=Outlier(theta6,theta3,theta5,theta8)
+    if Estimation!='Drop-Type1' and (Estimation>20.35119 or Estimation<-31.07149):
+        Estimation='Drop-Type2'
 elif d16>=0 and d17>=0 and d12<=0 and d14<=0:
-    theta6=-31.07149-180*math.acos(abs(d16)/0.0383)/math.pi
-    theta7=-82.49829+180*math.acos(abs(d17)/0.0383)/math.pi
-    theta2=-180*math.acos(abs(d12)/0.0383)/math.pi-5.36374
-    theta4=71.7874+180*math.acos(abs(d14)/0.0383)/math.pi-180
-    Estimation=Outlier(theta6,theta7,theta2,theta4)
+    try:
+        theta6=-31.07149-180*math.acos(abs(d16)/0.0383)/math.pi
+    except:
+        theta6=360
+    try:
+        theta7=-82.49829+180*math.acos(abs(d17)/0.0383)/math.pi
+    except:
+        theta7=360
+    try:
+        theta2=-180*math.acos(abs(d12)/0.0383)/math.pi-5.36374
+    except:
+        theta2=360
+    try:
+        theta4=71.7874+180*math.acos(abs(d14)/0.0383)/math.pi-180
+    except:
+        theta4=360
+    Check=Sanity(theta6,theta7,theta2,theta4)
+    if Check==False:
+        Estimation='Drop-Type1'
+    else:
+        stimation=Outlier(theta6,theta7,theta2,theta4)
+    if Estimation!='Drop-Type1' and (Estimation>-31.07149 or Estimation<-82.49829):
+        Estimation='Drop-Type2'
 elif d17>=0 and d18>=0 and d13<=0 and d15<=0:
-    theta7=-82.49829-180*math.acos(abs(d17)/0.0383)/math.pi
-    theta8=46.06855+180*math.acos(abs(d18)/0.0383)/math.pi-180
-    theta3=-180*math.acos(abs(d13)/0.0383)/math.pi-56.78296
-    theta5=20.35119+180*math.acos(abs(d15)/0.0383)/math.pi-180
-    Estimation=Outlier(theta8,theta7,theta3,theta5)
+    try:
+        theta7=-82.49829-180*math.acos(abs(d17)/0.0383)/math.pi
+    except:
+        theta7=360
+    try:
+        theta8=46.06855+180*math.acos(abs(d18)/0.0383)/math.pi-180
+    except:
+        theta8=360
+    try:
+        theta3=-180*math.acos(abs(d13)/0.0383)/math.pi-56.78296
+    except:
+        theta3=360
+    try:
+        theta5=20.35119+180*math.acos(abs(d15)/0.0383)/math.pi-180
+    except:
+        theta5=360
+    Check=Sanity(theta8,theta7,theta3,theta5)
+    if Check==False:
+        Estimation='Drop-Type1'
+    else:
+        Estimation=Outlier(theta8,theta7,theta3,theta5)
+    if Estimation!='Drop-Type1' and (Estimation>-82.49829 or Estimation<-133.93145):
+        Estimation='Drop-Type2'
 elif d12>=0 and d18>=0 and d14<=0 and d16<=0:
-    theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.36374-180
-    theta8=46.06855-180*math.acos(abs(d18)/0.0383)/math.pi-180
-    theta4=71.7874-180*math.acos(abs(d14)/0.0383)/math.pi-180
-    theta6=180*math.acos(abs(d16)/0.0383)/math.pi-31.07149-180
-    Estimation=Outlier(theta8,theta2,theta4,theta6)
+    try:
+        theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.36374-180
+    except:
+        theta2=360
+    try:
+        theta8=46.06855-180*math.acos(abs(d18)/0.0383)/math.pi-180
+    except:
+        theta8=360
+    try:
+        theta4=71.7874-180*math.acos(abs(d14)/0.0383)/math.pi-180
+    except:
+        theta4=360
+    try:
+        theta6=180*math.acos(abs(d16)/0.0383)/math.pi-31.07149-180
+    except:
+        theta6=360
+    Check=Sanity(theta8,theta2,theta4,theta6)
+    if Check==False:
+        Estimation='Drop-Type1'
+    else:
+        Estimation=Outlier(theta8,theta2,theta4,theta6)
+    if Estimation!='Drop-Type1' and (Estimation>-133.93145 or Estimation<-180):
+        Estimation='Drop-Type2'
+else:
+    Estimation='Drop-Type3'
 print(Estimation)
