@@ -9,7 +9,7 @@ import numpy as np
 import os
 import csv
 import math
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from statistics import variance
 from statistics import mean
@@ -47,16 +47,16 @@ mic6=data6
 mic7=data7
 mic8=data8
 
-#fig, axs = plt.subplots(2, 2)
-#axs[0, 0].plot(np.arange(len(mic1)), mic1)
-#axs[0, 0].set_title('Channel1')
-#axs[0, 1].plot(np.arange(len(mic2)), mic2, 'tab:orange')
-#axs[0, 1].set_title('Channel2')
-#axs[1, 0].plot(np.arange(len(mic3)), mic3, 'tab:green')
-#axs[1, 0].set_title('Channel3')
-#axs[1, 1].plot(np.arange(len(mic7)), mic7, 'tab:red')
-#axs[1, 1].set_title('Channel7')
-#plt.show()
+fig, axs = plt.subplots(2, 2)
+axs[0, 0].plot(np.arange(len(mic1)), mic1)
+axs[0, 0].set_title('Channel1')
+axs[0, 1].plot(np.arange(len(mic2)), mic2, 'tab:orange')
+axs[0, 1].set_title('Channel2')
+axs[1, 0].plot(np.arange(len(mic4)), mic4, 'tab:green')
+axs[1, 0].set_title('Channel3')
+axs[1, 1].plot(np.arange(len(mic7)), mic7, 'tab:red')
+axs[1, 1].set_title('Channel7')
+plt.show()
 
 cor11=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic1)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic1)))
 xcor11=abs(np.fft.fftshift(np.fft.ifft(cor11)))
@@ -75,16 +75,16 @@ xcor17=abs(np.fft.fftshift(np.fft.ifft(cor17)))
 cor18=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic8)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic8)))
 xcor18=abs(np.fft.fftshift(np.fft.ifft(cor18)))
 
-#fig, axs = plt.subplots(2, 2)
-#axs[0, 0].plot(np.arange(len(xcor12)), xcor12)
-#axs[0, 0].set_title('xcor12')
-#axs[0, 1].plot(np.arange(len(xcor13)), xcor13, 'tab:orange')
-#axs[0, 1].set_title('xcor13')
-#axs[1, 0].plot(np.arange(len(xcor16)), xcor16, 'tab:green')
-#axs[1, 0].set_title('xcor16')
-#axs[1, 1].plot(np.arange(len(xcor17)), xcor17, 'tab:red')
-#axs[1, 1].set_title('xcor17')
-#plt.show()
+fig, axs = plt.subplots(2, 2)
+axs[0, 0].plot(np.arange(len(xcor12)), xcor12)
+axs[0, 0].set_title('xcor12')
+axs[0, 1].plot(np.arange(len(xcor14)), xcor14, 'tab:orange')
+axs[0, 1].set_title('xcor13')
+axs[1, 0].plot(np.arange(len(xcor16)), xcor16, 'tab:green')
+axs[1, 0].set_title('xcor16')
+axs[1, 1].plot(np.arange(len(xcor18)), xcor18, 'tab:red')
+axs[1, 1].set_title('xcor17')
+plt.show()
 
 Peak=[0,0,0,0,0,0,0,0]
 Estimate=[0,0,0,0,0,0,0,0]
@@ -272,7 +272,7 @@ if d14>=0 and d15>=0 and d12<=0 and d17<=0:
         Estimation=Avg_filter(theta2,theta4,theta5,theta7)
     else:
         Estimation=Outlier(theta2,theta4,theta5,theta7)
-    if Estimation!=111 and (Estimation>71.7874 or Estimation<20.35119):
+    if Estimation!=111 and (Estimation>81.7874 or Estimation<10.35119):
         Estimation=222
 elif d13>=0 and d14>=0 and d18<=0 and d16<=0:
     try:
@@ -298,7 +298,7 @@ elif d13>=0 and d14>=0 and d18<=0 and d16<=0:
         Estimation=Avg_filter(theta3,theta4,theta6,theta8)
     else:
         Estimation=Outlier(theta3,theta4,theta6,theta8)
-    if Estimation!=111 and (Estimation<71.7874 or Estimation>123.21704):
+    if Estimation!=111 and (Estimation<61.7874 or Estimation>133.21704):
         Estimation=222
 elif d12>=0 and d13>=0 and d15<=0 and d17<=0:
     try:
@@ -324,7 +324,7 @@ elif d12>=0 and d13>=0 and d15<=0 and d17<=0:
         Estimation=Avg_filter(theta2,theta3,theta5,theta7)
     else:
         Estimation=Outlier(theta2,theta3,theta5,theta7)
-    if Estimation!=111 and (Estimation<123.21704 or Estimation>174.63626):
+    if Estimation!=111 and (Estimation<113.21704 or Estimation>184.63626):
         Estimation=222
 elif d15>=0 and d16>=0 and d13<=0 and d18<=0:
     try:
@@ -350,7 +350,7 @@ elif d15>=0 and d16>=0 and d13<=0 and d18<=0:
         Estimation=Avg_filter(theta3,theta5,theta6,theta8)
     else:
         Estimation=Outlier(theta6,theta3,theta5,theta8)
-    if Estimation!=111 and (Estimation>20.35119 or Estimation<-31.07149):
+    if Estimation!=111 and (Estimation>30.35119 or Estimation<-41.07149):
         Estimation=222
 elif d16>=0 and d17>=0 and d12<=0 and d14<=0:
     try:
@@ -376,7 +376,7 @@ elif d16>=0 and d17>=0 and d12<=0 and d14<=0:
         Estimation=Avg_filter(theta2,theta4,theta6,theta7)
     else:
         stimation=Outlier(theta6,theta7,theta2,theta4)
-    if Estimation!=111 and (Estimation>-31.07149 or Estimation<-82.49829):
+    if Estimation!=111 and (Estimation>-21.07149 or Estimation<-92.49829):
         Estimation=222
 elif d17>=0 and d18>=0 and d13<=0 and d15<=0:
     try:
@@ -402,7 +402,7 @@ elif d17>=0 and d18>=0 and d13<=0 and d15<=0:
         Estimation=Avg_filter(theta3,theta5,theta7,theta8)
     else:
         Estimation=Outlier(theta8,theta7,theta3,theta5)
-    if Estimation!=111 and (Estimation>-82.49829 or Estimation<-133.93145):
+    if Estimation!=111 and (Estimation>-72.49829 or Estimation<-143.93145):
         Estimation=222
 elif d12>=0 and d18>=0 and d14<=0 and d16<=0:
     try:
@@ -428,7 +428,7 @@ elif d12>=0 and d18>=0 and d14<=0 and d16<=0:
         Estimation=Avg_filter(theta2,theta4,theta6,theta8)
     else:
         Estimation=Outlier(theta8,theta2,theta4,theta6)
-    if Estimation!=111 and (Estimation>-133.93145 or Estimation<-180):
+    if Estimation!=111 and (Estimation>-123.93145 or Estimation<-190):
         Estimation=222
 else:
     Estimation=333
