@@ -28,6 +28,23 @@ samplerate, data7 = wavfile.read('channel_6.wav')
 samplerate, data8 = wavfile.read('channel_7.wav')
 
 print('1')
+Angle_Est=0
+x0=0
+y0=0
+x1=-0.03813
+y1=0.00358
+x2=-0.02098
+y2=0.03204
+x3=0.01197
+y3=0.03638
+x4=0.03591
+y4=0.01332
+x5=0.03281
+y5=-0.01977
+x6=0.005
+y6=-0.03797
+x7=-0.02657
+y7=-0.02758
 
 #cwd = os.getcwd()  
 #files = os.listdir(cwd) 
@@ -38,6 +55,7 @@ print('1')
 #print(total)
 #print(len(data))
 #print(len(data[0]))
+
 mic1=data1
 mic2=data2
 mic3=data3
@@ -47,16 +65,16 @@ mic6=data6
 mic7=data7
 mic8=data8
 
-fig, axs = plt.subplots(2, 2)
-axs[0, 0].plot(np.arange(len(mic1)), mic1)
-axs[0, 0].set_title('Channel1')
-axs[0, 1].plot(np.arange(len(mic2)), mic2, 'tab:orange')
-axs[0, 1].set_title('Channel2')
-axs[1, 0].plot(np.arange(len(mic4)), mic4, 'tab:green')
-axs[1, 0].set_title('Channel3')
-axs[1, 1].plot(np.arange(len(mic7)), mic7, 'tab:red')
-axs[1, 1].set_title('Channel7')
-plt.show()
+#fig, axs = plt.subplots(2, 2)
+#axs[0, 0].plot(np.arange(len(mic1)), mic1)
+#axs[0, 0].set_title('Channel1')
+#axs[0, 1].plot(np.arange(len(mic2)), mic2, 'tab:orange')
+#axs[0, 1].set_title('Channel2')
+#axs[1, 0].plot(np.arange(len(mic4)), mic4, 'tab:green')
+#axs[1, 0].set_title('Channel3')
+#axs[1, 1].plot(np.arange(len(mic7)), mic7, 'tab:red')
+#axs[1, 1].set_title('Channel7')
+#plt.show()
 
 cor11=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic1)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic1)))
 xcor11=abs(np.fft.fftshift(np.fft.ifft(cor11)))
@@ -75,16 +93,16 @@ xcor17=abs(np.fft.fftshift(np.fft.ifft(cor17)))
 cor18=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic8)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic8)))
 xcor18=abs(np.fft.fftshift(np.fft.ifft(cor18)))
 
-fig, axs = plt.subplots(2, 2)
-axs[0, 0].plot(np.arange(len(xcor12)), xcor12)
-axs[0, 0].set_title('xcor12')
-axs[0, 1].plot(np.arange(len(xcor14)), xcor14, 'tab:orange')
-axs[0, 1].set_title('xcor13')
-axs[1, 0].plot(np.arange(len(xcor16)), xcor16, 'tab:green')
-axs[1, 0].set_title('xcor16')
-axs[1, 1].plot(np.arange(len(xcor18)), xcor18, 'tab:red')
-axs[1, 1].set_title('xcor17')
-plt.show()
+#fig, axs = plt.subplots(2, 2)
+#axs[0, 0].plot(np.arange(len(xcor12)), xcor12)
+#axs[0, 0].set_title('xcor12')
+#axs[0, 1].plot(np.arange(len(xcor14)), xcor14, 'tab:orange')
+#axs[0, 1].set_title('xcor13')
+#axs[1, 0].plot(np.arange(len(xcor16)), xcor16, 'tab:green')
+#axs[1, 0].set_title('xcor16')
+#axs[1, 1].plot(np.arange(len(xcor18)), xcor18, 'tab:red')
+#axs[1, 1].set_title('xcor17')
+#plt.show()
 
 Peak=[0,0,0,0,0,0,0,0]
 Estimate=[0,0,0,0,0,0,0,0]
@@ -135,6 +153,28 @@ d15=Est_distance[3]
 d16=Est_distance[4]
 d17=Est_distance[5]
 d18=Est_distance[6]
+
+def LLS(d12,d13,d14,d15,d16,d17,d18):
+    H=np.array([[x1-x0,y1-y0,-d12],
+    [x2-x0,y2-y0,-d13],
+    [x3-x0,y3-y0,-d14],
+    [x4-x0,y4-y0,-d15],
+    [x5-x0,y5-y0,-d16],
+    [x6-x0,y6-y0,-d17],
+    [x7-x0,y7-y0,-d18]])
+    x=np.array([[-d12**2-(x0**2+y0**2)+(x1**2+y1**2)],
+    [-d13**2-(x0**2+y0**2)+(x2**2+y2**2)],
+    [-d14**2-(x0**2+y0**2)+(x3**2+y3**2)],
+    [-d15**2-(x0**2+y0**2)+(x4**2+y4**2)],
+    [-d16**2-(x0**2+y0**2)+(x5**2+y5**2)],
+    [-d17**2-(x0**2+y0**2)+(x6**2+y6**2)],
+    [-d18**2-(x0**2+y0**2)+(x7**2+y7**2)]])
+    
+    Theta=0.5*np.matmul(np.matmul(np.linalg.inv(np.matmul(H.transpose(),H)),H.transpose()),x)
+    return Theta
+
+Theta=LLS(d12,d13,d14,d15,d16,d17,d18)
+print(Theta)
 
 def Outlier(a1,a2,a3,a4):
     if a1==360:
