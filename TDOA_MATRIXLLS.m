@@ -11,7 +11,7 @@ x6=0.005;y6=-0.03797;z6=0;
 x7=-0.02657;y7=-0.02758;z7=0;
 
 r=38.2978/1000; %In milimeter, radius of the circular array%
-rx=0.1;ry=0.2;rz=0; %Source Location
+rx=2;ry=2;rz=0; %Source Location
 rxULA = phased.OmnidirectionalMicrophoneElement;
 rxpos1 = [0;0;0];
 rxvel1 = [0;0;0];
@@ -173,6 +173,15 @@ for i=1:length(xcor12_PHAT)
 end
 Estimated_difference=Estimated_difference/fs;
 Distance_difference=Estimated_difference*Propagation_Speed
+
+subplot(2,2,1)
+plot(1:length(xcor12_PHAT),xcor12_PHAT)
+subplot(2,2,2)
+plot(1:length(xcor13_PHAT),xcor13_PHAT)
+subplot(2,2,3)
+plot(1:length(xcor14_PHAT),xcor14_PHAT)
+subplot(2,2,4)
+plot(1:length(xcor15_PHAT),xcor15_PHAT)
 
 d12=Distance_difference(1);
 d13=Distance_difference(2);
