@@ -406,7 +406,7 @@ while True:
             elif Check==2:
                 Estimation=Avg_filter(theta2,theta4,theta6,theta7)
             else:
-                stimation=Outlier(theta6,theta7,theta2,theta4)
+                Estimation=Outlier(theta6,theta7,theta2,theta4)
             if Estimation!=1 and (Estimation>-21.07149 or Estimation<-92.49829):
                 Estimation=2
         elif d17>=0 and d18>=0 and d13<=0 and d15<=0:
@@ -454,7 +454,7 @@ while True:
                 theta6=360
             Check=Sanity(theta8,theta2,theta4,theta6)
             if Check==False:
-                Estimation=111
+                Estimation=1
             elif Check==2:
                 Estimation=Avg_filter(theta2,theta4,theta6,theta8)
             else:
