@@ -190,16 +190,27 @@ while True:
     samplerate, data8 = wavfile.read('channel_7.wav')
     samplerate, data9 = wavfile.read('channel_8.wav')
     
+    mic1=data1
+    mic2=data2
+    mic3=data3
+    mic4=data4
+    mic5=data5
+    mic6=data6
+    mic7=data7
+    mic8=data8
     
-    if max(data9)>15000:
-        mic1=data1
-        mic2=data2
-        mic3=data3
-        mic4=data4
-        mic5=data5
-        mic6=data6
-        mic7=data7
-        mic8=data8
+    a=max(mic1)/10
+    a1=max(mic2)/10
+    a2=max(mic3)/10
+    a3=max(mic4)/10
+    a4=max(mic5)/10
+    a5=max(mic6)/10
+    a6=max(mic7)/10
+    a7=max(mic8)/10
+    avg_peak=(a+a1+a2+a3+a4+a5+a6+a7)/8
+
+    if avg_peak>200:
+    #if max(data9)>15000:
 
         cor11=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic1)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic1)))
         xcor11=abs(np.fft.fftshift(np.fft.ifft(cor11)))
