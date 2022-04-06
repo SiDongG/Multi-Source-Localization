@@ -298,13 +298,13 @@ while True:
                 theta7=360
             Check=Sanity(theta2,theta4,theta5,theta7)
             if Check==False:
-                Estimation=111
+                Estimation=1
             elif Check==2:
                 Estimation=Avg_filter(theta2,theta4,theta5,theta7)
             else:
                 Estimation=Outlier(theta2,theta4,theta5,theta7)
-            if Estimation!=111 and (Estimation>81.7874 or Estimation<10.35119):
-                Estimation=222
+            if Estimation!=1 and (Estimation>81.7874 or Estimation<10.35119):
+                Estimation=2
         elif d13>=0 and d14>=0 and d18<=0 and d16<=0:
             try:
                 theta4=180*math.acos(abs(d14)/0.0383)/math.pi+71.7874
@@ -324,13 +324,13 @@ while True:
                 theta8=360
             Check=Sanity(theta3,theta4,theta6,theta8)
             if Check==False:
-                Estimation=111
+                Estimation=1
             elif Check==2:
                 Estimation=Avg_filter(theta3,theta4,theta6,theta8)
             else:
                 Estimation=Outlier(theta3,theta4,theta6,theta8)
-            if Estimation!=111 and (Estimation<61.7874 or Estimation>133.21704):
-                Estimation=222
+            if Estimation!=1 and (Estimation<61.7874 or Estimation>133.21704):
+                Estimation=2
         elif d12>=0 and d13>=0 and d15<=0 and d17<=0:
             try:
                 theta2=180-180*math.acos(abs(d12)/0.0383)/math.pi-5.3637
@@ -350,13 +350,13 @@ while True:
                 theta7=360
             Check=Sanity(theta2,theta3,theta5,theta7)
             if Check==False:
-                Estimation=111
+                Estimation=1
             elif Check==2:
                 Estimation=Avg_filter(theta2,theta3,theta5,theta7)
             else:
                 Estimation=Outlier(theta2,theta3,theta5,theta7)
-            if Estimation!=111 and (Estimation<113.21704 or Estimation>184.63626):
-                Estimation=222
+            if Estimation!=1 and (Estimation<113.21704 or Estimation>184.63626):
+                Estimation=2
         elif d15>=0 and d16>=0 and d13<=0 and d18<=0:
             try:
                 theta5=20.35119-180*math.acos(abs(d15)/0.0383)/math.pi
@@ -376,13 +376,13 @@ while True:
                 theta8=360
             Check=Sanity(theta6,theta3,theta5,theta8)
             if Check==False:
-                Estimation=111
+                Estimation=1
             elif Check==2:
                 Estimation=Avg_filter(theta3,theta5,theta6,theta8)
             else:
                 Estimation=Outlier(theta6,theta3,theta5,theta8)
-            if Estimation!=111 and (Estimation>30.35119 or Estimation<-41.07149):
-                Estimation=222
+            if Estimation!=1 and (Estimation>30.35119 or Estimation<-41.07149):
+                Estimation=2
         elif d16>=0 and d17>=0 and d12<=0 and d14<=0:
             try:
                 theta6=-31.07149-180*math.acos(abs(d16)/0.0383)/math.pi
@@ -402,13 +402,13 @@ while True:
                 theta4=360
             Check=Sanity(theta6,theta7,theta2,theta4)
             if Check==False:
-                Estimation=111
+                Estimation=1
             elif Check==2:
                 Estimation=Avg_filter(theta2,theta4,theta6,theta7)
             else:
                 stimation=Outlier(theta6,theta7,theta2,theta4)
-            if Estimation!=111 and (Estimation>-21.07149 or Estimation<-92.49829):
-                Estimation=222
+            if Estimation!=1 and (Estimation>-21.07149 or Estimation<-92.49829):
+                Estimation=2
         elif d17>=0 and d18>=0 and d13<=0 and d15<=0:
             try:
                 theta7=-82.49829-180*math.acos(abs(d17)/0.0383)/math.pi
@@ -428,13 +428,13 @@ while True:
                 theta5=360
             Check=Sanity(theta8,theta7,theta3,theta5)
             if Check==False:
-                Estimation=111
+                Estimation=1
             elif Check==2:
                 Estimation=Avg_filter(theta3,theta5,theta7,theta8)
             else:
                 Estimation=Outlier(theta8,theta7,theta3,theta5)
-            if Estimation!=111 and (Estimation>-72.49829 or Estimation<-143.93145):
-                Estimation=222
+            if Estimation!=1 and (Estimation>-72.49829 or Estimation<-143.93145):
+                Estimation=2
         elif d12>=0 and d18>=0 and d14<=0 and d16<=0:
             try:
                 theta2=180*math.acos(abs(d12)/0.0383)/math.pi-5.36374-180
@@ -459,10 +459,12 @@ while True:
                 Estimation=Avg_filter(theta2,theta4,theta6,theta8)
             else:
                 Estimation=Outlier(theta8,theta2,theta4,theta6)
-            if Estimation!=111 and (Estimation>-123.93145 or Estimation<-190):
-                Estimation=222
+            if Estimation!=1 and (Estimation>-123.93145 or Estimation<-190):
+                Estimation=2
         else:
-            Estimation=333
+            Estimation=3
+        if 24<Estimation<25:
+            Estimation==4
         print(Estimation)
     else:
         print('No one speaking')
