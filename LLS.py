@@ -14,6 +14,7 @@ from scipy.interpolate import interp1d
 from statistics import variance
 from statistics import mean
 import subprocess
+from matrix_lite import led
 #package main
 #import ("github.com/matrix-io/matrix-lite-go")
 #g++ -o mic_record_file mic_record_file.cpp -std=c++11 -lmatrix_creator_hal -lgflags
@@ -473,8 +474,13 @@ while True:
         if 24<Estimation<25:
             Estimation=4
         if Error==True:
-            Estimation=5
+            Estimation=4
         print(Estimation)
+        if Estimation != 1 and Estimation !=2 and Estimation !=3 and Estimation !=4:
+            index = int(9 - Estimation/20)
+            everloop = ['black'] * led.length
+            everloop[index] = {'r':100}
+            led.set(everloop)
         
     else:
         print('No one speaking')
