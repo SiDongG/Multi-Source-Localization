@@ -218,8 +218,8 @@ while True:
     a7=max(mic7)/10
     a8=max(mic8)/10
     avg_peak=(a1+a2+a3+a4+a5+a6+a7+a8)/8
-    
-    if avg_peak>200:
+    print(avg_peak*10)
+    if avg_peak>120:
         
         try:
             cor11=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic1)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic1)))
@@ -341,7 +341,7 @@ while True:
                 Estimation=Avg_filter(theta3,theta4,theta6,theta8)
             else:
                 Estimation=Outlier(theta3,theta4,theta6,theta8)
-            if Estimation!=1 and (Estimation<61.7874 or Estimation>133.21704):
+            if Estimation!=1 and (Estimation<71.7874-degree_freedom or Estimation>123.21704+degree_freedom):
                 Estimation=2
         elif d12>=0 and d13>=0 and d15<=0 and d17<=0:
             try:
@@ -367,7 +367,7 @@ while True:
                 Estimation=Avg_filter(theta2,theta3,theta5,theta7)
             else:
                 Estimation=Outlier(theta2,theta3,theta5,theta7)
-            if Estimation!=1 and (Estimation<113.21704 or Estimation>184.63626):
+            if Estimation!=1 and (Estimation<123.21704-degree_freedom or Estimation>174.63626+degree_freedom):
                 Estimation=2
         elif d15>=0 and d16>=0 and d13<=0 and d18<=0:
             try:
@@ -393,7 +393,7 @@ while True:
                 Estimation=Avg_filter(theta3,theta5,theta6,theta8)
             else:
                 Estimation=Outlier(theta6,theta3,theta5,theta8)
-            if Estimation!=1 and (Estimation>30.35119 or Estimation<-41.07149):
+            if Estimation!=1 and (Estimation>20.35119+degree_freedom or Estimation<-31.07149-degree_freedom):
                 Estimation=2
         elif d16>=0 and d17>=0 and d12<=0 and d14<=0:
             try:
@@ -419,7 +419,7 @@ while True:
                 Estimation=Avg_filter(theta2,theta4,theta6,theta7)
             else:
                 stimation=Outlier(theta6,theta7,theta2,theta4)
-            if Estimation!=1 and (Estimation>-21.07149 or Estimation<-92.49829):
+            if Estimation!=1 and (Estimation>-31.07149+degree_freedom or Estimation<-82.49829-degree_freedom):
                 Estimation=2
         elif d17>=0 and d18>=0 and d13<=0 and d15<=0:
             try:
@@ -445,7 +445,7 @@ while True:
                 Estimation=Avg_filter(theta3,theta5,theta7,theta8)
             else:
                 Estimation=Outlier(theta8,theta7,theta3,theta5)
-            if Estimation!=1 and (Estimation>-72.49829 or Estimation<-143.93145):
+            if Estimation!=1 and (Estimation>-82.49829+degree_freedom or Estimation<-133.93145-degree_freedom):
                 Estimation=2
         elif d12>=0 and d18>=0 and d14<=0 and d16<=0:
             try:
@@ -471,7 +471,7 @@ while True:
                 Estimation=Avg_filter(theta2,theta4,theta6,theta8)
             else:
                 Estimation=Outlier(theta8,theta2,theta4,theta6)
-            if Estimation!=1 and (Estimation>-123.93145 or Estimation<-190):
+            if Estimation!=1 and (Estimation>-133.93145+degree_freedom or Estimation<-190):
                 Estimation=2
         else:
             Estimation=3
