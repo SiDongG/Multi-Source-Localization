@@ -171,7 +171,7 @@ y6=-0.03797
 x7=-0.02657
 y7=-0.02758
 Estimation=0
-degree_freedom=15
+degree_freedom=20
 
 #everloop = [{'w':50}] * led.length
 led.set('#BBC41C')
@@ -219,7 +219,7 @@ while True:
     a8=max(mic8)/10
     avg_peak=(a1+a2+a3+a4+a5+a6+a7+a8)/8
     print(avg_peak*10)
-    if avg_peak>120:
+    if avg_peak>130:
         
         try:
             cor11=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic1)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic1)))
