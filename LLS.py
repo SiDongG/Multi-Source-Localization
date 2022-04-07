@@ -172,6 +172,9 @@ x7=-0.02657
 y7=-0.02758
 Estimation=0
 
+#everloop = [{'w':50}] * led.length
+led.set('#BBC41C')
+
 while True:
     Error=False
     p = subprocess.Popen("./mic_record_file", stdout=subprocess.PIPE, shell=True)
@@ -478,10 +481,16 @@ while True:
         print(Estimation)
         if Estimation != 1 and Estimation !=2 and Estimation !=3 and Estimation !=4:
             index = int(9 - Estimation/20)
-            everloop = ['black'] * led.length
-            everloop[index] = {'r':100}
+            everloop = [{'b':50}] * led.length
+            everloop[index] = {'g':100}
+            led.set(everloop)
+            
+        else:
+            everloop = [{'r':50}] * led.length
             led.set(everloop)
         
     else:
         print('No one speaking')
+        everloop = [{'w':50}] * led.length
+        led.set(everloop)
         
