@@ -150,6 +150,7 @@ def Avg_filter(a1,a2,a3,a4):
     Estimation=(a1+a2+a3+a4-720)/2
     return Estimation
 
+Error=False
 fs=16000
 Angle_Est=0
 x0=0
@@ -171,6 +172,7 @@ y7=-0.02758
 Estimation=0
 
 while True:
+    Error=False
     p = subprocess.Popen("./mic_record_file", stdout=subprocess.PIPE, shell=True)
     p.communicate()
     os.system("sox -r 16000 -c 1 -e signed -c 1 -e signed -b 16 mic_16000_s16le_channel_0.raw channel_0.wav")
@@ -213,24 +215,27 @@ while True:
     avg_peak=(a1+a2+a3+a4+a5+a6+a7+a8)/8
     
     if avg_peak>200:
-
-        cor11=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic1)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic1)))
-        xcor11=abs(np.fft.fftshift(np.fft.ifft(cor11)))
-        cor12=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic2)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic2)))
-        xcor12=abs(np.fft.fftshift(np.fft.ifft(cor12)))
-        cor13=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic3)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic3)))
-        xcor13=abs(np.fft.fftshift(np.fft.ifft(cor13)))
-        cor14=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic4)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic4)))
-        xcor14=abs(np.fft.fftshift(np.fft.ifft(cor14)))
-        cor15=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic5)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic5)))
-        xcor15=abs(np.fft.fftshift(np.fft.ifft(cor15)))
-        cor16=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic6)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic6)))
-        xcor16=abs(np.fft.fftshift(np.fft.ifft(cor16)))
-        cor17=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic7)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic7)))
-        xcor17=abs(np.fft.fftshift(np.fft.ifft(cor17)))
-        cor18=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic8)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic8)))
-        xcor18=abs(np.fft.fftshift(np.fft.ifft(cor18)))
-
+        
+        try:
+            cor11=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic1)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic1)))
+            xcor11=abs(np.fft.fftshift(np.fft.ifft(cor11)))
+            cor12=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic2)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic2)))
+            xcor12=abs(np.fft.fftshift(np.fft.ifft(cor12)))
+            cor13=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic3)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic3)))
+            xcor13=abs(np.fft.fftshift(np.fft.ifft(cor13)))
+            cor14=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic4)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic4)))
+            xcor14=abs(np.fft.fftshift(np.fft.ifft(cor14)))
+            cor15=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic5)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic5)))
+            xcor15=abs(np.fft.fftshift(np.fft.ifft(cor15)))
+            cor16=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic6)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic6)))
+            xcor16=abs(np.fft.fftshift(np.fft.ifft(cor16)))
+            cor17=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic7)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic7)))
+            xcor17=abs(np.fft.fftshift(np.fft.ifft(cor17)))
+            cor18=np.divide(np.fft.fft(mic1)*np.conj(np.fft.fft(mic8)),abs(np.fft.fft(mic1))*abs(np.fft.fft(mic8)))
+            xcor18=abs(np.fft.fftshift(np.fft.ifft(cor18)))
+        except:
+            Error=True
+            
         Peak=[0,0,0,0,0,0,0,0]
         Estimate=[0,0,0,0,0,0,0,0]
         Index=[0,0,0,0,0,0,0,0]
@@ -467,6 +472,8 @@ while True:
             Estimation=3
         if 24<Estimation<25:
             Estimation=4
+        if Error==True:
+            Estimation=5
         print(Estimation)
         
     else:
