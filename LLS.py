@@ -171,6 +171,7 @@ y6=-0.03797
 x7=-0.02657
 y7=-0.02758
 Estimation=0
+degree_freedom=15
 
 #everloop = [{'w':50}] * led.length
 led.set('#BBC41C')
@@ -314,7 +315,7 @@ while True:
                 Estimation=Avg_filter(theta2,theta4,theta5,theta7)
             else:
                 Estimation=Outlier(theta2,theta4,theta5,theta7)
-            if Estimation!=1 and (Estimation>81.7874 or Estimation<10.35119):
+            if Estimation!=1 and (Estimation>71.7874+degree_freedom or Estimation<20.35119-degree_freedom):
                 Estimation=2
         elif d13>=0 and d14>=0 and d18<=0 and d16<=0:
             try:
