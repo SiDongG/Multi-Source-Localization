@@ -171,12 +171,15 @@ y6=-0.03797
 x7=-0.02657
 y7=-0.02758
 Estimation=0
+Buffer=0
+count=0
 degree_freedom=20
 
 #everloop = [{'w':50}] * led.length
 led.set('#BBC41C')
 
 while True:
+    count=count+1
     Error=False
     p = subprocess.Popen("./mic_record_file", stdout=subprocess.PIPE, shell=True)
     p.communicate()
@@ -479,12 +482,23 @@ while True:
             Estimation=4
         if Error==True:
             Estimation=4
+            
+        if count~=1:
+            if abs(Estimation-Buffer)>180:
+                if abs(Estimation-Buffer)<260:
+                    Estimation=4
+            else:
+                if abs(Estimation-Buffer)>100:
+                    Estimation=4
+
         print(Estimation)
+        
         if Estimation != 1 and Estimation !=2 and Estimation !=3 and Estimation !=4:
             index = int(9 - Estimation/20)
             everloop = [{'b':50}] * led.length
             everloop[index] = {'g':100}
             led.set(everloop)
+            Buffer=Estimation
             
         else:
             everloop = [{'r':50}] * led.length
